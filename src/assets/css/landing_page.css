@@ -1,0 +1,21 @@
+
+@media (min-width:480px)  { 
+    .introimage {
+        background-image:url('http://www.part-box.com/images/yellow-frog.png');
+        height: 200px;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+ }
+@media (min-width:1025px) { 
+    .introimage {
+        height: 900px;
+        background-image: url("../images/landing_image.png") !important;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    
+
+ }
+
+
