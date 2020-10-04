@@ -13,6 +13,9 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import '../assets/css/landing_page.css';
 import personIcon from '../assets/images/business-man.png';
+import { connect } from 'react-redux';
+import { userActions } from '../redux/_actions';
+import ValidateInputs from './auth.validators';
 
 function Copyright() {
   return (
@@ -76,6 +79,18 @@ class SignInSide extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleLoginForm = this.handleLoginForm.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.isValidInputs = this.isValidInputs.bind(this);
+  }
+
+
+  isValidInputs() {
+    const { errors, isValid } = ValidateInputs(this.state)
+    console.log(errors)
+    if (!isValid) {
+      this.setState({ errors })
+    }
+
+    return isValid;
   }
 
   handleChange = (e) => {
@@ -91,11 +106,16 @@ class SignInSide extends React.Component {
     e.preventDefault();
     this.setState({ submitted: true })
     const { loginFlag, email, password } = this.state;
-    if (loginFlag) {
+    if (loginFlag && this.isValidInputs()) {
       console.log("Submitting Login form ", email, password);
+      if (email && password) {
+        this.props.login(email, password);
+      }
 
+    } else if (!loginFlag && this.isValidInputs()) {
+      console.log("Submitting SignUp form ");
     } else {
-      console.log("Submitting SignUp form ", email, password);
+      console.log("Something is wrong")
     }
 
 
@@ -245,5 +265,13 @@ class SignInSide extends React.Component {
     );
   }
 }
+function mapState(state) {
+  const { loggingIn } = state.authentication;
+  return { loggingIn };
+}
 
-export default withStyles(useStyles, { withTheme: true })(SignInSide);
+const actionCreators = {
+  login: userActions.login,
+  logout: userActions.logout
+};
+export default connect(mapState, actionCreators)(withStyles(useStyles, { withTheme: true })(SignInSide));

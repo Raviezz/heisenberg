@@ -1,16 +1,23 @@
 import validator from 'validator';
 import isEmpty from 'lodash/isEmpty';
 
-export default function ValidateInputs(name) {
+export default function ValidateInputs(user) {
     let errors = {};
-    console.log("Validating username password", name.username, name.password)
-    if (validator.isEmpty(name.username)) {
-        errors.username = 'Username is required';
+
+
+    if (user.loginFlag) {
+        console.log("Validating LoginForm Data")
+        if (validator.isEmpty(user.email)) {
+            errors.username = 'Username is required';
+        }
+
+        if (validator.isEmpty(user.password)) {
+            errors.password = 'Password is required';
+        }
+    } else {
+        console.log("Validating SignUp Form Data")
     }
 
-    if (validator.isEmpty(name.password)) {
-        errors.password = 'Password is required';
-    }
 
     return {
         errors,

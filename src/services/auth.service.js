@@ -8,10 +8,12 @@ export const userService = {
 function login(user, password) {
     console.log(user, password);
     const reqData = {
-        "name": "raviteja",
-        "userId": 123,
-        "userRole": "admin"
+        "username": user,
+        "password": password,
+        "user_role": "admin",
+        "user_extras": "Chrome"
     }
+    console.log("reqData = ", reqData);
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'App-Origin': '8' },
