@@ -4,3 +4,6 @@ Hey , welcome to project `Heisenberg`
 2.P2P live interaction  
 3.Live coding tests  
 4.Get feeback & analytics on ur performance  
+
+![alt text](https://github.com/Raviezz/heisenberg/blob/master/src/assets/images/landing_image.png?raw=true)
+
