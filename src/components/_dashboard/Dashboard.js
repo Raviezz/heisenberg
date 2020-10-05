@@ -1,5 +1,6 @@
 import React from 'react';
 import SessionWindow from './SessionWindow';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -25,7 +26,6 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import IconButton from '@material-ui/core/IconButton';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
@@ -33,7 +33,16 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import UserDetailsGrid from './responsivelayout';
-
+import Avatar from '@material-ui/core/Avatar';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardMedia from '@material-ui/core/CardMedia';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
+import personIcon from '../../assets/images/business-man.png';
+import backgroundPhoto from '../../assets/images/bgimage.jpg';
 const useStyles = makeStyles((theme) => ({
     root: {
         position: 'fixed',
@@ -41,10 +50,11 @@ const useStyles = makeStyles((theme) => ({
         right: theme.spacing(2),
     },
     appbar: {
-        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+        background: '#263238',
     },
     grow: {
-        flexGrow: 1,
+        flex: 1,
+        flexGrow: 1
     },
     menuButton: {
         marginRight: theme.spacing(2),
@@ -64,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
         },
         marginRight: theme.spacing(2),
         marginLeft: 0,
-        width: '100%',
+        width: '75%',
         [theme.breakpoints.up('sm')]: {
             marginLeft: theme.spacing(3),
             width: 'auto',
@@ -106,6 +116,13 @@ const useStyles = makeStyles((theme) => ({
     },
     list: {
         width: 250,
+    },
+    carddrawer: {
+        maxWidth: 345,
+        height: 200,
+    },
+    media: {
+        height: 140,
     },
 }));
 
@@ -205,6 +222,8 @@ export default function Dashboard(props) {
         setMobileMoreAnchorEl(event.currentTarget);
     };
 
+
+
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
         <Menu
@@ -218,7 +237,11 @@ export default function Dashboard(props) {
         >
             <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
             <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-        </Menu>
+            <MenuItem
+                component={Link}
+                to="/login"
+            >Logout</MenuItem>
+        </Menu >
     );
 
     const mobileMenuId = 'primary-search-account-menu-mobile';
@@ -269,6 +292,26 @@ export default function Dashboard(props) {
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
         >
+            <Card className={classes.carddrawer}>
+                <CardActionArea>
+                    <CardMedia
+                        className={classes.media}
+                        image={backgroundPhoto}
+                        title="Contemplative Reptile"
+                    />
+                    <CardContent>
+                        <Typography gutterBottom variant="h5" component="h2">
+                            Lizard
+                                        </Typography>
+                        <Typography variant="body2" color="textSecondary" component="p">
+                            Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
+                            across all continents except Antarctica
+                                     </Typography>
+                    </CardContent>
+                </CardActionArea>
+
+            </Card>
+            <Divider />
             <List>
                 {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                     <ListItem button key={text}>
@@ -312,6 +355,7 @@ export default function Dashboard(props) {
                                 onClose={toggleDrawer(false)}
                                 onOpen={toggleDrawer(true)}
                             >
+
                                 {list()}
                             </SwipeableDrawer>
                             <Typography className={classes.title} variant="h6" noWrap>
@@ -373,7 +417,6 @@ export default function Dashboard(props) {
             <Toolbar id="back-to-top-anchor" />
             <Container>
                 <UserDetailsGrid />
-
             </Container>
             <ScrollTop {...props}>
                 <Fab className={classes.appbar} size="small" aria-label="scroll back to top">

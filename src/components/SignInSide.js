@@ -68,6 +68,7 @@ class SignInSide extends React.Component {
 
   constructor(props) {
     super(props);
+    this.props.logout();
     this.state = {
       loginFlag: true,
       username: '',
