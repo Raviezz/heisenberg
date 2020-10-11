@@ -16,19 +16,7 @@ import personIcon from '../assets/images/business-man.png';
 import { connect } from 'react-redux';
 import { userActions } from '../redux/_actions';
 import ValidateInputs from './auth.validators';
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        ravitejab
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import { Copyright } from '../commons';
 
 const useStyles = theme => ({
   root: {
