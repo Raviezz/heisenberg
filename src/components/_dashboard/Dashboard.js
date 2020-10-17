@@ -46,6 +46,8 @@ import personIcon from '../../assets/images/business-man.png';
 import backgroundPhoto from '../../assets/images/bgimage.jpg';
 import Grid from '@material-ui/core/Grid';
 import { Footer } from '../../commons';
+import Paper from '@material-ui/core/Paper';
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -157,6 +159,47 @@ const useStyles = makeStyles((theme) => ({
     footer: {
         backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(6),
+    },
+    helperBtns: {
+        background: '#9a000d',
+        borderRadius: 3,
+        border: 0,
+        color: 'white',
+        height: 40,
+        padding: '0 30px',
+        boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+        "&:hover": {
+            backgroundColor: 'white',
+            color: '#9a000d',
+            fontWeight: 600,
+        }
+    },
+    aboutBtn: {
+        background: theme.palette.background.paper,
+        borderRadius: 3,
+        border: 0,
+        color: '#9a000d',
+        height: 40,
+        padding: '0 30px',
+        boxShadow: '0 2px 3px 2px rgba(255, 105, 135, .3)',
+        "&:hover": {
+            fontWeight: 600,
+            background: '#9a000d',
+            color: theme.palette.background.paper
+        }
+    },
+    customBadge: {
+        backgroundColor: "#9a000d",
+        color: "white"
+    },
+    subContent: {
+        marginTop: 10,
+        flexGrow: 1,
+    },
+    paper: {
+        padding: theme.spacing(2),
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
     },
 }));
 
@@ -293,7 +336,7 @@ export default function Dashboard(props) {
         >
             <MenuItem>
                 <IconButton aria-label="show 4 new mails" color="inherit">
-                    <Badge badgeContent={4} color="secondary">
+                    <Badge badgeContent={4} classes={{ badge: classes.customBadge }}>
                         <MailIcon />
                     </Badge>
                 </IconButton>
@@ -301,7 +344,7 @@ export default function Dashboard(props) {
             </MenuItem>
             <MenuItem>
                 <IconButton aria-label="show 11 new notifications" color="inherit">
-                    <Badge badgeContent={11} color="secondary">
+                    <Badge badgeContent={11} classes={{ badge: classes.customBadge }}>
                         <NotificationsIcon />
                     </Badge>
                 </IconButton>
@@ -413,12 +456,12 @@ export default function Dashboard(props) {
                             <div className={classes.grow} />
                             <div className={classes.sectionDesktop}>
                                 <IconButton aria-label="show 4 new mails" color="inherit">
-                                    <Badge badgeContent={4} color="secondary">
+                                    <Badge badgeContent={4} classes={{ badge: classes.customBadge }}>
                                         <MailIcon />
                                     </Badge>
                                 </IconButton>
                                 <IconButton aria-label="show 17 new notifications" color="inherit">
-                                    <Badge badgeContent={17} color="secondary">
+                                    <Badge badgeContent={17} classes={{ badge: classes.customBadge }}>
                                         <NotificationsIcon />
                                     </Badge>
                                 </IconButton>
@@ -455,8 +498,8 @@ export default function Dashboard(props) {
                 {/* Hero unit */}
                 <div className={classes.heroContent}>
                     <Container maxWidth="sm">
-                        <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-                            WELCOME FOLKS
+                        <Typography component="h1" variant="h3" align="center" color="textPrimary" gutterBottom>
+                            FREE MOCK INTERVIEWS
             </Typography>
                         <Typography variant="h5" align="center" color="textSecondary" paragraph>
                             Something short and leading about the collection below—its contents, the creator, etc.
@@ -466,13 +509,13 @@ export default function Dashboard(props) {
                         <div className={classes.heroButtons}>
                             <Grid container spacing={2} justify="center">
                                 <Grid item>
-                                    <Button variant="contained" color="primary">
-                                        Main call to action
+                                    <Button className={classes.helperBtns} >
+                                        Get An Interview
                   </Button>
                                 </Grid>
                                 <Grid item>
-                                    <Button variant="outlined" color="primary">
-                                        Secondary action
+                                    <Button variant="outlined" className={classes.aboutBtn}>
+                                        How it woks?
                   </Button>
                                 </Grid>
                             </Grid>
@@ -480,36 +523,18 @@ export default function Dashboard(props) {
                     </Container>
                 </div>
                 <Container className={classes.cardGrid} maxWidth="md">
-                    {/* End hero unit */}
-                    <Grid container spacing={4}>
-                        {cards.map((card) => (
-                            <Grid item key={card} xs={12} sm={6} md={4}>
-                                <Card className={classes.card}>
-                                    <CardMedia
-                                        className={classes.cardMedia}
-                                        image="https://source.unsplash.com/random"
-                                        title="Image title"
-                                    />
-                                    <CardContent className={classes.cardContent}>
-                                        <Typography gutterBottom variant="h5" component="h2">
-                                            Heading
-                    </Typography>
-                                        <Typography>
-                                            This is a media card. You can use this section to describe the content.
-                    </Typography>
-                                    </CardContent>
-                                    <CardActions>
-                                        <Button size="small" color="primary">
-                                            View
-                    </Button>
-                                        <Button size="small" color="primary">
-                                            Edit
-                    </Button>
-                                    </CardActions>
-                                </Card>
+                    <div className={classes.subContent}>
+                        <Grid container spacing={3}>
+
+                            <Grid item xs={12} sm={6}>
+                                <Paper className={classes.paper}>xs=12 sm=6</Paper>
                             </Grid>
-                        ))}
-                    </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Paper className={classes.paper}>xs=12 sm=6</Paper>
+                            </Grid>
+
+                        </Grid>
+                    </div>
                 </Container>
                 <Footer />
             </main>
