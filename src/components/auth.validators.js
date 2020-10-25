@@ -8,7 +8,7 @@ export default function ValidateInputs(user) {
     if (user.loginFlag) {
         console.log("Validating LoginForm Data")
         if (validator.isEmpty(user.email)) {
-            errors.username = 'Username is required';
+            errors.email = 'Username is required';
         }
 
         if (validator.isEmpty(user.password)) {

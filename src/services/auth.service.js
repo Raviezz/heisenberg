@@ -2,7 +2,8 @@
 
 export const userService = {
     login,
-    logout
+    logout,
+    register
 };
 
 function login(user, password) {
@@ -16,7 +17,7 @@ function login(user, password) {
     console.log("reqData = ", reqData);
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'App-Origin': '8' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(reqData)
     };
 
@@ -29,6 +30,36 @@ function login(user, password) {
 
             return token.token;
         });
+}
+
+function register(email, phone, fname, lname, confirmPass, utype, urole) {
+
+    const reqData = {
+        "email": email,
+        "password": confirmPass,
+        "user_role": urole,
+        "fname": fname,
+        "lname": lname,
+        "phone": phone,
+        "user_type": utype
+
+    }
+    console.log("reqData = ", reqData);
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reqData)
+    };
+
+    /* return fetch(`http://localhost:8080/bajaj/auth/register`, requestOptions)
+        .then(handleResponse)
+        .then(response => {
+            console.log("Registeration status  is ", response)
+            return response;
+        }); */
+
+    setTimeout(function () { console.log("submitted returns"); }, 2000);
+    return false;
 }
 
 function logout() {

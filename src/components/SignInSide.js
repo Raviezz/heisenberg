@@ -4,7 +4,14 @@ import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormGroup from '@material-ui/core/FormGroup';
 import Checkbox from '@material-ui/core/Checkbox';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import NativeSelect from '@material-ui/core/NativeSelect';
+import Select from '@material-ui/core/Select';
 import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
@@ -17,6 +24,9 @@ import { connect } from 'react-redux';
 import { userActions } from '../redux/_actions';
 import ValidateInputs from './auth.validators';
 import { Copyright } from '../commons';
+import { userService } from '../services/auth.service';
+import toastr from 'toastr'
+import 'toastr/build/toastr.min.css'
 
 const useStyles = theme => ({
   root: {
@@ -50,6 +60,21 @@ const useStyles = theme => ({
     padding: '0 20px',
     boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
   },
+  formControl: {
+    margin: theme.spacing(1),
+  },
+  textinput: {
+    '& .MuiTextField-root': {
+      margin: theme.spacing(2),
+      width: '25ch',
+    },
+    margin: {
+      margin: theme.spacing(1),
+    },
+    formGroup: {
+      alignItems: 'center'
+    },
+  },
 });
 
 class SignInSide extends React.Component {
@@ -59,9 +84,14 @@ class SignInSide extends React.Component {
     this.props.logout();
     this.state = {
       loginFlag: true,
-      username: '',
+      fname: '',
+      lname: '',
       email: '',
+      phone: '',
       password: '',
+      confirmPass: '',
+      utype: 0,
+      urole: 0,
       submitted: false,
       errors: {}
     }
@@ -81,6 +111,16 @@ class SignInSide extends React.Component {
 
     return isValid;
   }
+  onClick = (option) => {
+    toastr.options.closeButton = true;
+    toastr.clear()
+    if (option == 'success') {
+      toastr.success(`Successfully Registered`);
+    } else if (option == 'error') {
+      toastr.error(`Error in registration !`);
+    }
+
+  }
 
   handleChange = (e) => {
     const { name, value } = e.target;
@@ -91,10 +131,10 @@ class SignInSide extends React.Component {
     let toggle = this.state.loginFlag
     this.setState({ loginFlag: !toggle })
   };
-  handleSubmit = (e) => {
+  handleSubmit = async (e) => {
     e.preventDefault();
     this.setState({ submitted: true })
-    const { loginFlag, email, password } = this.state;
+    const { loginFlag, email, password, phone, fname, lname, confirmPass, utype, urole } = this.state;
     if (loginFlag && this.isValidInputs()) {
       console.log("Submitting Login form ", email, password);
       if (email && password) {
@@ -103,6 +143,14 @@ class SignInSide extends React.Component {
 
     } else if (!loginFlag && this.isValidInputs()) {
       console.log("Submitting SignUp form ");
+      const response = await userService.register(email, phone, fname, lname, confirmPass, utype, urole);
+      if (response == true) {
+        this.onClick('success')
+      } else {
+        this.onClick('error')
+      }
+
+
     } else {
       console.log("Something is wrong")
     }
@@ -112,7 +160,7 @@ class SignInSide extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { loginFlag, email, username, password, submitted, errors } = this.state;
+    const { loginFlag, email, fname, lname, phone, password, confirmPass, urole, utype, submitted, errors } = this.state;
     return (
       <Grid container component="main" className={classes.root}>
         <CssBaseline />
@@ -128,108 +176,204 @@ class SignInSide extends React.Component {
             </Typography>
             <form className={classes.form} noValidate onSubmit={this.handleSubmit}>
               {loginFlag ? <>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  value={email}
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  autoFocus
-                  onChange={this.handleChange}
-                />
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  value={password}
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                  onChange={this.handleChange}
-                />
-                {/*  <FormControlLabel
+                <FormGroup className={classes.formGroup} noValidate autoComplete="on">
+                  <FormControl variant="standard" className={classes.formControl}>
+                    <TextField
+                      variant="outlined"
+                      margin="normal"
+                      value={email}
+                      required
+                      fullWidth
+                      id="email"
+                      label="Email Address"
+                      name="email"
+                      autoComplete="email"
+                      autoFocus
+                      onChange={this.handleChange}
+                    />
+                  </FormControl>
+                  <FormControl variant="standard" className={classes.formControl}>
+                    <TextField
+                      variant="outlined"
+                      margin="normal"
+                      value={password}
+                      required
+                      fullWidth
+                      name="password"
+                      label="Password"
+                      type="password"
+                      id="password"
+                      autoComplete="current-password"
+                      onChange={this.handleChange}
+                    />
+                  </FormControl>
+                  {/*  <FormControlLabel
                   control={<Checkbox value="remember" color="primary" />}
                   label="Remember me"
                 /> */}
-
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                  disabled={submitted}
-                >
-                  Sign In
+                  <FormControl variant="standard" className={classes.formControl}>
+                    <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      className={classes.submit}
+                      disabled={submitted}
+                    >
+                      Sign In
             </Button>
-
+                  </FormControl>
+                </FormGroup>
               </> :
                 <>
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    value={username}
-                    fullWidth
-                    id="username"
-                    label="Full Name"
-                    name="username"
-                    autoComplete="username"
-                    autoFocus
-                    onChange={this.handleChange}
-                  />
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    value={email}
-                    fullWidth
-                    id="email"
-                    label="Email Address"
-                    name="email"
-                    autoComplete="email"
-                    onChange={this.handleChange}
-                  />
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="phone"
-                    label="Phone no"
-                    name="phone"
-                    autoComplete="phone"
-                    onChange={this.handleChange}
-                  />
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    autoComplete="current-password"
-                    onChange={this.handleChange}
-                  />
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                    disabled={submitted}
-                  >
-                    Sign Up
+                  <div>
+                    <FormGroup className={classes.formGroup} noValidate autoComplete="on">
+
+                      <FormControl variant="standard" className={classes.formControl}>
+                        <TextField
+                          variant="outlined"
+                          margin="normal"
+                          required
+                          value={fname}
+                          fullWidth
+                          id="firstname"
+                          label="First Name"
+                          name="fname"
+                          autoComplete="fname"
+                          autoFocus
+                          onChange={this.handleChange}
+
+                        />
+                      </FormControl>
+                      <FormControl variant="standard" className={classes.formControl}>
+                        <TextField
+                          variant="outlined"
+                          margin="normal"
+                          required
+                          value={lname}
+                          fullWidth
+                          id="lastname"
+                          label="Last Name"
+                          name="lname"
+                          autoComplete="lname"
+                          autoFocus
+                          onChange={this.handleChange}
+
+                        />
+                      </FormControl>
+                      <FormControl variant="standard" className={classes.formControl}>
+                        <TextField
+                          variant="outlined"
+                          margin="normal"
+                          required
+                          value={email}
+                          fullWidth
+                          id="email"
+                          label="Email Address"
+                          name="email"
+                          autoComplete="email"
+                          onChange={this.handleChange}
+
+                        />
+                      </FormControl>
+                      <FormControl variant="standard" className={classes.formControl}>
+                        <TextField
+                          variant="outlined"
+                          margin="normal"
+                          required
+                          fullWidth
+                          value={phone}
+                          id="phone"
+                          label="Phone no."
+                          name="phone"
+                          autoComplete="phone"
+                          onChange={this.handleChange}
+
+                        />
+                      </FormControl>
+                      <FormControl variant="standard" className={classes.formControl}>
+                        <TextField
+                          variant="outlined"
+                          margin="normal"
+                          required
+                          fullWidth
+                          value={password}
+                          name="password"
+                          label="Password"
+                          type="password"
+                          id="password"
+                          autoComplete="current-password"
+                          onChange={this.handleChange}
+
+                        />
+                      </FormControl>
+                      <FormControl variant="standard" className={classes.formControl}>
+                        <TextField
+                          variant="outlined"
+                          margin="normal"
+                          required
+                          fullWidth
+                          value={confirmPass}
+                          name="confirmPass"
+                          label="Confirm Password"
+                          type="password"
+                          id="cpassword"
+                          autoComplete="current-password"
+                          onChange={this.handleChange}
+
+                        />
+                      </FormControl>
+                      <FormControl variant="outlined" className={classes.formControl}>
+                        <InputLabel id="demo-simple-select-outlined-label">User Type</InputLabel>
+                        <Select
+                          labelId="demo-simple-select-outlined-label"
+                          id="demo-simple-select-outlined"
+                          value={utype}
+                          name="utype"
+                          label="User Type"
+                          onChange={this.handleChange}
+                        >
+                          <MenuItem value={0} disabled>
+                            <em>Choose Your Type</em>
+                          </MenuItem>
+                          <MenuItem value={10}>Interviewer</MenuItem>
+                          <MenuItem value={20}>Interviewee</MenuItem>
+
+                        </Select>
+                      </FormControl>
+                      <FormControl variant="outlined" className={classes.formControl}>
+                        <InputLabel id="demo-simple-select-outlined-label">Role</InputLabel>
+                        <Select
+                          labelId="demo-simple-select-outlined-label"
+                          id="demo-simple-select-outlined"
+                          value={urole}
+                          name="urole"
+                          label="Role"
+                          onChange={this.handleChange}
+                        >
+                          <MenuItem value={0} disabled>
+                            <em>Select Your Role</em>
+                          </MenuItem>
+                          <MenuItem value={10}>Software Developer</MenuItem>
+                          <MenuItem value={20}>DevOps Developer</MenuItem>
+                          <MenuItem value={30}>Data Science</MenuItem>
+                        </Select>
+                      </FormControl>
+                      <FormControl variant="standard" className={classes.formControl}>
+                        <Button
+                          type="submit"
+                          fullWidth
+                          variant="contained"
+                          color="primary"
+                          className={classes.submit}
+                          disabled={submitted}
+                        >
+                          Sign Up
                      </Button>
+                      </FormControl>
+                    </FormGroup>
+                  </div>
+
                 </>
               }
               <Grid container>
