@@ -1,6 +1,8 @@
 import { authConstants } from '../_constants';
 import { history } from '../_helpers';
 import { userService } from '../../services';
+import toastr from 'toastr'
+import 'toastr/build/toastr.min.css'
 
 export const userActions = {
     login,
@@ -14,11 +16,17 @@ function login(username, password) {
         userService.login(username, password)
             .then(
                 user => {
+                    toastr.success("Login Successfull!");
                     dispatch(success(user));
-                    history.push('/home');
-                    window.location.reload();
+                    setTimeout(function () {
+                        history.push('/home');
+                        window.location.reload();
+                    }, 1000);
+
                 },
                 error => {
+                    console.log("Failed to login", error.toString());
+                    toastr.error(error.toString());
                     dispatch(failure(error.toString()));
 
                 }

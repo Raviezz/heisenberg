@@ -7,12 +7,10 @@ export const userService = {
 };
 
 function login(user, password) {
-    console.log(user, password);
+    // console.log(user, password);
     const reqData = {
-        "username": user,
-        "password": password,
-        "user_role": "admin",
-        "user_extras": "Chrome"
+        "email": user,
+        "password": password
     }
     console.log("reqData = ", reqData);
     const requestOptions = {
@@ -21,14 +19,13 @@ function login(user, password) {
         body: JSON.stringify(reqData)
     };
 
-    return fetch(`http://localhost:8080/bajaj/auth/token`, requestOptions)
+    return fetch(`http://localhost:8080/interview/auth/token`, requestOptions)
         .then(handleResponse)
-        .then(token => {
-            console.log("Token is ", token)
+        .then(data => {
+            console.log("Token is ", data.token)
             // store user details and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('token', JSON.stringify(token.token));
-
-            return token.token;
+            localStorage.setItem('token', JSON.stringify(data.token));
+            return data.data;
         });
 }
 
@@ -70,14 +67,15 @@ function logout() {
 function handleResponse(response) {
     return response.text().then(text => {
         const data = text && JSON.parse(text);
+
+        //localStorage.setItem("response", data.status);
+
         if (!response.ok) {
-            if (response.status === 401) {
-                // auto logout if 401 response returned from api
+            if (response.status === 401 || response.status === 500) {
                 logout();
 
             }
-
-            const error = (data && data.message) || response.statusText;
+            const error = (data && data.errorMsg) || response.status;
             return Promise.reject(error);
         }
 

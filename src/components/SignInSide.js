@@ -159,7 +159,7 @@ class SignInSide extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, loggingIn } = this.props;
     const { loginFlag, email, fname, lname, phone, password, confirmPass, urole, utype, submitted, errors } = this.state;
     return (
       <Grid container component="main" className={classes.root}>
@@ -218,7 +218,7 @@ class SignInSide extends React.Component {
                       variant="contained"
                       color="primary"
                       className={classes.submit}
-                      disabled={submitted}
+                      disabled={loggingIn}
                     >
                       Sign In
             </Button>
