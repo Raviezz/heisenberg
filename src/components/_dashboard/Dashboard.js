@@ -47,7 +47,10 @@ import backgroundPhoto from '../../assets/images/bgimage.jpg';
 import Grid from '@material-ui/core/Grid';
 import { Footer } from '../../commons';
 import Paper from '@material-ui/core/Paper';
+import ScrollTop from '../extras/ScrollTop';
+import { connect } from 'react-redux';
 
+//import HideOnScroll from '../extras/HideOnScroll';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -204,50 +207,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function ScrollTop(props) {
-    const { children, window } = props;
-    const classes = useStyles();
-    // Note that you normally won't need to set the window ref as useScrollTrigger
-    // will default to window.
-    // This is only being set here because the demo is in an iframe.
-    const trigger = useScrollTrigger({
-        target: window ? window() : undefined,
-        disableHysteresis: true,
-        threshold: 100,
-    });
-
-    const handleClick = (event) => {
-        const anchor = (event.target.ownerDocument || document).querySelector('#back-to-top-anchor');
-
-        if (anchor) {
-            anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    };
-
-    return (
-        <Zoom in={trigger}>
-            <div onClick={handleClick} role="presentation" className={classes.root}>
-                {children}
-            </div>
-        </Zoom>
-    );
-}
-
-ScrollTop.propTypes = {
-    children: PropTypes.element.isRequired,
-    /**
-     * Injected by the documentation to work in an iframe.
-     * You won't need it on your project.
-     */
-    window: PropTypes.func,
-};
-
 
 function HideOnScroll(props) {
     const { children, window } = props;
-    // Note that you normally won't need to set the window ref as useScrollTrigger
-    // will default to window.
-    // This is only being set here because the demo is in an iframe.
+
     const trigger = useScrollTrigger({ target: window ? window() : undefined });
 
     return (
@@ -259,22 +222,21 @@ function HideOnScroll(props) {
 
 HideOnScroll.propTypes = {
     children: PropTypes.element.isRequired,
-    /**
-     * Injected by the documentation to work in an iframe.
-     * You won't need it on your project.
-     */
+
     window: PropTypes.func,
 };
 
 
 
-export default function Dashboard(props) {
+function Dashboard(props) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
     const [left, setLeft] = React.useState(false);
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+
 
     const toggleDrawer = (open) => (event) => {
         if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -370,26 +332,6 @@ export default function Dashboard(props) {
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
         >
-            <Card className={classes.carddrawer}>
-                <CardActionArea>
-                    <CardMedia
-                        className={classes.media}
-                        image={backgroundPhoto}
-                        title="Contemplative Reptile"
-                    />
-                    <CardContent>
-                        <Typography gutterBottom variant="h5" component="h2">
-                            Lizard
-                                        </Typography>
-                        <Typography variant="body2" color="textSecondary" component="p">
-                            Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
-                            across all continents except Antarctica
-                                     </Typography>
-                    </CardContent>
-                </CardActionArea>
-
-            </Card>
-            <Divider />
             <List>
                 {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                     <ListItem button key={text}>
@@ -409,8 +351,6 @@ export default function Dashboard(props) {
             </List>
         </div>
     );
-
-
     return (
         <React.Fragment>
             <CssBaseline />
@@ -494,7 +434,7 @@ export default function Dashboard(props) {
             </HideOnScroll>
             <Toolbar id="back-to-top-anchor" />
             <main>
-                {/* Hero unit */}
+
                 <div className={classes.heroContent}>
                     <Container maxWidth="sm">
                         <Typography component="h1" variant="h3" align="center" color="textPrimary" gutterBottom>
@@ -536,13 +476,18 @@ export default function Dashboard(props) {
                     </div>
                 </Container>
                 <Footer />
-            </main>
+            </main >
             <ScrollTop {...props}>
                 <Fab className={classes.appbar} size="small" aria-label="scroll back to top">
                     <KeyboardArrowUpIcon />
                 </Fab>
             </ScrollTop>
-        </React.Fragment>
+        </React.Fragment >
     );
 }
+function mapState(state) {
+    const { user } = state.authentication;
+    return { user };
+}
+export default connect(mapState)(Dashboard);
 

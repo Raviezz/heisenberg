@@ -18,11 +18,11 @@ function login(username, password) {
                 user => {
                     toastr.success("Login Successfull!");
                     dispatch(success(user));
-                    console.log("User details", user);
+                    localStorage.setItem('user', user);
                     setTimeout(function () {
                         history.push('/home');
                         window.location.reload();
-                    }, 5000);
+                    }, 2000);
 
                 },
                 error => {
@@ -34,8 +34,8 @@ function login(username, password) {
             );
     };
 
-    function request(user) { return { type: authConstants.LOGIN_REQUEST, user } }
-    function success(user) { return { type: authConstants.LOGIN_SUCCESS, user } }
+    function request(user) { return { type: authConstants.LOGIN_REQUEST, user: user } }
+    function success(user) { return { type: authConstants.LOGIN_SUCCESS, user: user } }
     function failure(error) { return { type: authConstants.LOGIN_FAILURE, error } }
 }
 

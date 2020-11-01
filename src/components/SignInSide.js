@@ -77,6 +77,9 @@ const useStyles = theme => ({
   },
 });
 
+var userTypes = []
+var sftTypes = []
+
 class SignInSide extends React.Component {
 
   constructor(props) {
@@ -99,8 +102,25 @@ class SignInSide extends React.Component {
     this.handleLoginForm = this.handleLoginForm.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.isValidInputs = this.isValidInputs.bind(this);
+
   }
 
+  async componentDidMount() {
+    await this.getUserTypesList();
+    await this.getSftRolesList();
+  }
+
+  async getUserTypesList() {
+    const response = await userService.getUserTypes()
+    userTypes = response;
+    console.log("user types are ", userTypes)
+  };
+
+  async getSftRolesList() {
+    const response = await userService.getSftTypes()
+    sftTypes = response;
+    console.log("Software  types are ", sftTypes)
+  };
 
   isValidInputs() {
     const { errors, isValid } = ValidateInputs(this.state)
@@ -111,13 +131,13 @@ class SignInSide extends React.Component {
 
     return isValid;
   }
-  onClick = (option) => {
+  onClick = (resp) => {
     toastr.options.closeButton = true;
     toastr.clear()
-    if (option == 'success') {
-      toastr.success(`Successfully Registered`);
-    } else if (option == 'error') {
-      toastr.error(`Error in registration !`);
+    if (resp.status === 'success') {
+      toastr.success(resp.data);
+    } else {
+      toastr.error(resp.data);
     }
 
   }
@@ -144,17 +164,13 @@ class SignInSide extends React.Component {
       }
 
     } else if (!loginFlag && this.isValidInputs()) {
-      console.log("Submitting SignUp form ");
+      console.log("Submitting SignUp form ", email, phone, fname, lname, confirmPass, utype, urole);
       const response = await userService.register(email, phone, fname, lname, confirmPass, utype, urole);
-      if (response == true) {
-        this.onClick('success')
-      } else {
-        this.onClick('error')
-      }
-
-
+      this.onClick(response)
+      this.setState({ loginFlag: true });
+      this.setState({ submitted: false });
     } else {
-      console.log("Something is wrong")
+      this.onClick({ status: "error", data: "Something is wrong!" })
     }
 
 
@@ -338,8 +354,9 @@ class SignInSide extends React.Component {
                           <MenuItem value={0} disabled>
                             <em>Choose Your Type</em>
                           </MenuItem>
-                          <MenuItem value={10}>Interviewer</MenuItem>
-                          <MenuItem value={20}>Interviewee</MenuItem>
+                          {userTypes.map((utype, index) => {
+                            return <MenuItem value={utype.user_type_id}>{utype.user_type}</MenuItem>
+                          })}
 
                         </Select>
                       </FormControl>
@@ -356,9 +373,10 @@ class SignInSide extends React.Component {
                           <MenuItem value={0} disabled>
                             <em>Select Your Role</em>
                           </MenuItem>
-                          <MenuItem value={10}>Software Developer</MenuItem>
-                          <MenuItem value={20}>DevOps Developer</MenuItem>
-                          <MenuItem value={30}>Data Science</MenuItem>
+                          {sftTypes.map((stype, index) => {
+                            return <MenuItem value={stype.sft_role_id}>{stype.sft_role}</MenuItem>
+                          })}
+
                         </Select>
                       </FormControl>
                       <FormControl variant="standard" className={classes.formControl}>
