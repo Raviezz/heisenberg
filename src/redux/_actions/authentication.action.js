@@ -18,10 +18,11 @@ function login(username, password) {
                 user => {
                     toastr.success("Login Successfull!");
                     dispatch(success(user));
+                    console.log("User details", user);
                     setTimeout(function () {
                         history.push('/home');
                         window.location.reload();
-                    }, 1000);
+                    }, 5000);
 
                 },
                 error => {

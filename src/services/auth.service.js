@@ -1,9 +1,10 @@
-
+import axios from 'axios';
 
 export const userService = {
     login,
     logout,
-    register
+    register,
+    getUserTypes
 };
 
 function login(user, password) {
@@ -14,17 +15,40 @@ function login(user, password) {
     }
     console.log("reqData = ", reqData);
     const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Access-Control-Allow-Origin': '*' },
         body: JSON.stringify(reqData)
     };
 
-    return fetch(`http://localhost:8080/interview/auth/token`, requestOptions)
-        .then(handleResponse)
+    return axios({
+        headers: {
+            'Access-Control-Allow-Origin': 'http://localhost:8080'
+        },
+        method: 'POST',
+        withCredentials: false,
+        url: 'http://localhost:8080/interview/auth/token/login',
+        data: reqData
+    })
+        //.then(handleResponse)
         .then(data => {
-            console.log("Token is ", data.token)
+            const user = data.data
+            console.log("Token is ", user)
             // store user details and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('token', JSON.stringify(data.token));
+            localStorage.setItem('token', JSON.stringify(user.token));
+            return user.data;
+        });
+}
+
+function getUserTypes() {
+
+    const requestOptions = {
+        method: 'GET',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+    };
+
+    return fetch('http://localhost:8080/interview/user/v1/get-user-types', requestOptions)
+        .then(data => {
+
             return data.data;
         });
 }
@@ -65,20 +89,17 @@ function logout() {
 }
 
 function handleResponse(response) {
-    return response.text().then(text => {
-        const data = text && JSON.parse(text);
+    console.log(response.status)
+    const data = response.data;
+    console.log("Final response is ", JSON.parse(data))
+    //localStorage.setItem("response", data.status);
 
-        //localStorage.setItem("response", data.status);
+    if (response.status !== 200) {
+        logout();
+        const error = (data && data.errorMsg) || response.status;
+        return Promise.reject(error);
+    }
 
-        if (!response.ok) {
-            if (response.status === 401 || response.status === 500) {
-                logout();
+    return JSON.parse(data);
 
-            }
-            const error = (data && data.errorMsg) || response.status;
-            return Promise.reject(error);
-        }
-
-        return data;
-    });
 }

@@ -131,6 +131,8 @@ class SignInSide extends React.Component {
     let toggle = this.state.loginFlag
     this.setState({ loginFlag: !toggle })
   };
+
+
   handleSubmit = async (e) => {
     e.preventDefault();
     this.setState({ submitted: true })
