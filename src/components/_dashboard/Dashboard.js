@@ -8,13 +8,12 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { fade, makeStyles, withStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Slide from '@material-ui/core/Slide';
 import Fab from '@material-ui/core/Fab';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import Zoom from '@material-ui/core/Zoom';
 import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -35,12 +34,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import UserDetailsGrid from './responsivelayout';
 import Avatar from '@material-ui/core/Avatar';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Button from '@material-ui/core/Button';
 import personIcon from '../../assets/images/business-man.png';
 import backgroundPhoto from '../../assets/images/bgimage.jpg';
@@ -53,11 +47,60 @@ import { connect } from 'react-redux';
 //import HideOnScroll from '../extras/HideOnScroll';
 
 
+const imageUrl = 'https://avatars0.githubusercontent.com/u/25122306?s=400&u=082a2b71bba65ef38c35a8c98605c7ddb86d770d&v=4';
+
+const StyledBadge = withStyles((theme) => ({
+    badge: {
+        backgroundColor: '#44b700',
+        color: '#44b700',
+        boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+        '&::after': {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            borderRadius: '50%',
+            animation: '$ripple 1.2s infinite ease-in-out',
+            border: '1px solid currentColor',
+            content: '""',
+        },
+    },
+    '@keyframes ripple': {
+        '0%': {
+            transform: 'scale(.8)',
+            opacity: 1,
+        },
+        '100%': {
+            transform: 'scale(2.4)',
+            opacity: 0,
+        },
+    },
+}))(Badge);
+
 const useStyles = makeStyles((theme) => ({
     root: {
         position: 'fixed',
         bottom: theme.spacing(2),
         right: theme.spacing(2),
+    },
+    drawerRoot: {
+        width: '100%',
+        maxWidth: '36ch',
+        backgroundColor: theme.palette.background.paper,
+    },
+    menuList: {
+        width: '100%',
+        maxWidth: '36ch',
+        backgroundColor: theme.palette.background.paper,
+        color: '#9a000d',
+        '&:hover': {
+            backgroundColor: '#263238',
+            color: theme.palette.background.paper,
+        },
+    },
+    inline: {
+        display: 'inline',
     },
     appbar: {
         background: '#263238',
@@ -332,15 +375,48 @@ function Dashboard(props) {
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
         >
+            <List className={classes.drawerRoot}>
+                <ListItem alignItems="flex-start">
+                    <ListItemAvatar>
+                        <StyledBadge
+                            overlap="circle"
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'right',
+                            }}
+                            variant="dot"
+                        >
+                            <Avatar alt="Remy Sharp" src={imageUrl} />
+                        </StyledBadge>
+                    </ListItemAvatar>
+                    <ListItemText
+                        primary={props.user.first_name + " " + props.user.last_name}
+                        secondary={
+                            <React.Fragment>
+                                <Typography
+                                    component="span"
+                                    variant="body2"
+                                    className={classes.inline}
+                                    color="textPrimary"
+                                >
+                                    {props.user.sft_role}
+                                </Typography>
+
+                            </React.Fragment>
+                        }
+                    />
+                </ListItem>
+            </List>
+            <Divider variant="inset" />
             <List>
                 {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem button key={text}>
+                    <ListItem button key={text} className={classes.menuList}>
                         <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                         <ListItemText primary={text} />
                     </ListItem>
                 ))}
             </List>
-            <Divider />
+            <Divider variant="inset" />
             <List>
                 {['All mail', 'Trash', 'Spam'].map((text, index) => (
                     <ListItem button key={text}>
@@ -441,9 +517,8 @@ function Dashboard(props) {
                             FREE MOCK INTERVIEWS
             </Typography>
                         <Typography variant="h5" align="center" color="textSecondary" paragraph>
-                            Something short and leading about the collection below—its contents, the creator, etc.
-                            Make it short and sweet, but not too short so folks don&apos;t simply skip over it
-                            entirely.
+                            There was an idea. The idea was to bring together a group of of remarkable people to see if they could become something more.
+                            To see if they could work together when we needed them to, to fight the battles that we never could.
             </Typography>
                         <div className={classes.heroButtons}>
                             <Grid container spacing={2} justify="center">
@@ -487,6 +562,7 @@ function Dashboard(props) {
 }
 function mapState(state) {
     const { user } = state.authentication;
+
     return { user };
 }
 export default connect(mapState)(Dashboard);
