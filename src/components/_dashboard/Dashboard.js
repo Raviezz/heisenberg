@@ -43,9 +43,8 @@ import { Footer } from '../../commons';
 import Paper from '@material-ui/core/Paper';
 import ScrollTop from '../extras/ScrollTop';
 import { connect } from 'react-redux';
-
-//import HideOnScroll from '../extras/HideOnScroll';
-
+import HideOnScroll from '../extras/HideOnScroll';
+import CheckboxesTags from '../_dashboard/SearchHelper';
 
 const imageUrl = 'https://avatars0.githubusercontent.com/u/25122306?s=400&u=082a2b71bba65ef38c35a8c98605c7ddb86d770d&v=4';
 
@@ -251,26 +250,6 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-function HideOnScroll(props) {
-    const { children, window } = props;
-
-    const trigger = useScrollTrigger({ target: window ? window() : undefined });
-
-    return (
-        <Slide appear={false} direction="down" in={!trigger}>
-            {children}
-        </Slide>
-    );
-}
-
-HideOnScroll.propTypes = {
-    children: PropTypes.element.isRequired,
-
-    window: PropTypes.func,
-};
-
-
-
 function Dashboard(props) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -411,20 +390,13 @@ function Dashboard(props) {
             <List>
                 {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                     <ListItem button key={text} className={classes.menuList}>
-                        <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                        <ListItemIcon>{index % 2 === 0 ? <InboxIcon style={{ color: '#9a000d' }} /> : <MailIcon style={{ color: '#9a000d' }} />}</ListItemIcon>
                         <ListItemText primary={text} />
                     </ListItem>
                 ))}
             </List>
             <Divider variant="inset" />
-            <List>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                    <ListItem button key={text}>
-                        <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                        <ListItemText primary={text} />
-                    </ListItem>
-                ))}
-            </List>
+
         </div>
     );
     return (
@@ -538,8 +510,10 @@ function Dashboard(props) {
                 </div>
                 <Container className={classes.cardGrid} maxWidth="md">
                     <div className={classes.subContent}>
-                        <Grid container spacing={3}>
-
+                        <Grid container spacing={4}>
+                            <Grid item xs={12}>
+                                <Paper className={classes.paper}><CheckboxesTags /></Paper>
+                            </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Paper className={classes.paper}>xs=12 sm=6</Paper>
                             </Grid>

@@ -22,7 +22,7 @@ function login(username, password) {
                     setTimeout(function () {
                         history.push('/home');
                         window.location.reload();
-                    }, 2000);
+                    }, 1000);
 
                 },
                 error => {
